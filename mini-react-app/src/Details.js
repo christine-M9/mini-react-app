@@ -1,8 +1,8 @@
-// src/Details.js
 import React, { useEffect, useState } from 'react';
 
 const Details = () => {
   const [details, setDetails] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetch('/db.json')
@@ -11,11 +11,27 @@ const Details = () => {
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
 
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredDetails = details.filter(
+    (item) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div>
       <h1>Details</h1>
+      <input
+        type="text"
+        placeholder="Search by name or description"
+        value={searchQuery}
+        onChange={handleSearch}
+      />
       <ul>
-        {details.map((item) => (
+        {filteredDetails.map((item) => (
           <li key={item.id}>
             <strong>{item.name}</strong>
             <p>{item.description}</p>
